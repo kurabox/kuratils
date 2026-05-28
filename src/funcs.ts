@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { eld } from "eld/large";
-import { Language, DataType, CrawlStatus } from "./types.ts";
+import { Language, PageType, CrawlStatus } from "./types.ts";
 
 export function msgLog(msg: string): void {
     console.log(`[${new Date().toString()}] ${msg}`);
@@ -49,8 +49,8 @@ export function isLanguageValue(value: unknown): boolean {
 }
 
 // Hàm kiểm tra xem biến bất kỳ có thuộc kiểu DataType hay không
-export function isDataTypeValue(value: unknown): boolean {
-    return Object.values(DataType).includes(value as DataType);
+export function isPageTypeValue(value: unknown): boolean {
+    return Object.values(PageType).includes(value as PageType);
 }
 
 // Hàm kiểm tra xem biến bất kỳ có thuộc kiểu CrawlStatus hay không

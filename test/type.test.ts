@@ -1,38 +1,99 @@
 import { assert, assertFalse, assertEquals } from "@std/assert";
-import { DataType, isDataTypeValue, MariaDateTime } from "../src/types.ts";
+import { PageType } from "../src/types.ts";
+import { isPageTypeValue } from "../src/funcs.ts";
+import { generateV4UUID, Page } from "../mod.ts";
 
 Deno.test("DataType test", () => {
-    const dataType = DataType.general;
-    assert(isDataTypeValue(dataType) === true);
+    const dataType = PageType.Web;
+    assert(isPageTypeValue(dataType) === true);
 
     const randomValue: unknown = "somevalue";
-    assertFalse(isDataTypeValue(randomValue));
+    assertFalse(isPageTypeValue(randomValue));
 });
 
-Deno.test("MariaDatetime type test", () => {
-    const mariaDatetime: MariaDateTime = new MariaDateTime(new Date());
-    mariaDatetime.logValue();
+Deno.test("Page type test", (): void => {
+    const testPage: Page = new Page(
+        generateV4UUID(),
+        "https://example.com",
+        "Valid title",
+        new Date(),
+        PageType.Web,
+        new URL("https://example.com").hostname,
+        new Date(),
+        new Date(),
+        "This is Page content",
+    );
+    assert(testPage.validate());
 
-    // Case 1: Ngày hợp lệ
-    const date1 = new Date("2026-04-01T03:30:34Z");
-    const mariaDate1 = new MariaDateTime(date1);
-    assertEquals(mariaDate1.value, "2026-04-01 03:30:34", "Chuyển đổi đúng định dạng");
-    assert(mariaDate1.validate() === true);
-    mariaDate1.logValue(); // đảm bảo không lỗi khi in ra
+    testPage.logData();
 
-    // Case 2: Ngày khác
-    const date2 = new Date("2026-12-25T15:45:00Z");
-    const mariaDate2 = new MariaDateTime(date2);
-    assert(mariaDate2.validate() === true);
-    assertEquals(mariaDate2.value, "2026-12-25 15:45:00", "Chuyển đổi đúng định dạng");
-    mariaDate2.logValue();
+    // invalid uuid
+    const testPage2: Page = new Page(
+        "dddf", // v4 uuid không hợp lệ
+        "https://example.com",
+        "Valid title",
+        new Date(),
+        PageType.Web,
+        new URL("https://example.com").hostname,
+        new Date(),
+        new Date(),
+        "This is Page content",
+    );
+    assertFalse(testPage2.validate());
 
-    // Case 3: Ngày hiện tại
-    const now = new Date();
-    const mariaDateNow = new MariaDateTime(now);
-    // Kiểm tra chuỗi có dạng YYYY-MM-DD HH:MM:SS
-    const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-    assert(mariaDateNow.validate() === true);
-    assertEquals(regex.test(mariaDateNow.value), true, "Định dạng hợp lệ cho ngày hiện tại");
-    mariaDateNow.logValue();
+    // invalid url
+    const testPage3: Page = new Page(
+        generateV4UUID(),
+        "httpsexample",
+        "Valid title",
+        new Date(),
+        PageType.Web,
+        new URL("https://example.com").hostname,
+        new Date(),
+        new Date(),
+        "This is Page content",
+    );
+    assertFalse(testPage3.validate());
+
+    // Invalid title
+    const testPage4: Page = new Page(
+        generateV4UUID(),
+        "https://example.com",
+        "",
+        new Date(),
+        PageType.Web,
+        new URL("https://example.com").hostname,
+        new Date(),
+        new Date(),
+        "This is Page content",
+    );
+    assertFalse(testPage4.validate());
+
+    // invalid page source
+    const testPage5: Page = new Page(
+        generateV4UUID(),
+        "https://example.com",
+        "Valid title",
+        new Date(),
+        PageType.Web,
+        "",
+        new Date(),
+        new Date(),
+        "This is Page content",
+    );
+    assertFalse(testPage5.validate());
+
+    // invalid page content
+    const testPage6: Page = new Page(
+        generateV4UUID(),
+        "https://example.com",
+        "Valid title",
+        new Date(),
+        PageType.Web,
+        new URL("https://example.com").hostname,
+        new Date(),
+        new Date(),
+        "",
+    );
+    assertFalse(testPage6.validate());
 });
