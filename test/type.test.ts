@@ -120,19 +120,23 @@ Deno.test("Page type test", (): void => {
 });
 
 Deno.test("Image type test", (): void => {
-    const testImage1: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text");
+    const testImage1: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text", generateV4UUID());
     assert(testImage1.validate());
     testImage1.logData();
 
     // Invalid id
-    const testImage2: Image = new Image("invalid id", "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text");
+    const testImage2: Image = new Image("invalid id", "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text", generateV4UUID());
     assertFalse(testImage2.validate());
 
     // invalid image src
-    const testImage3: Image = new Image(generateV4UUID(), "klax", "image alt text");
+    const testImage3: Image = new Image(generateV4UUID(), "klax", "image alt text", generateV4UUID());
     assertFalse(testImage3.validate());
 
     // invalid altText
-    const testImage4: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "1");
+    const testImage4: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "1", generateV4UUID());
     assertFalse(testImage4.validate());
+
+    // invalid pageId
+    const testImage5: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "1", "invalid uuid");
+    assertFalse(testImage5.validate());
 });

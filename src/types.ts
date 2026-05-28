@@ -93,17 +93,20 @@ export class Image implements IData {
     id: string;
     src: string;
     altText: string;
+    pageId: string; // id của page chứa hình ảnh này
     
-    constructor(id: string, src: string, altText: string) {
+    constructor(id: string, src: string, altText: string, pageId: string) {
         this.id = id;
         this.src = src;
         this.altText = altText;
+        this.pageId = pageId;
     }
 
     validate(): boolean {
         if (!v4.validate(this.id)) return false;    // id không hợp lệ
         if (!isValidUrl(this.src)) return false;    // src không hợp lệ
         if (!isValidStringWithMinLen(this.altText, 2)) return false;    // alt text của ảnh không hợp lệ
+        if (!v4.validate(this.pageId)) return false;    // pageId không hợp lệ
         return true;    // Xác nhận ảnh hợp lệ
     }
 
@@ -112,7 +115,8 @@ export class Image implements IData {
         Image:
             id: ${this.id}
             src: ${this.src}
-            alt-text: ${this.altText}
+            alt text: ${this.altText}
+            page id: ${this.pageId}
         `);
     }
 }
