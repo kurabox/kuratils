@@ -87,3 +87,32 @@ export class Page implements IData {
         `);
     }
 }
+
+// Kiểu dữ liệu Image
+export class Image implements IData {
+    id: string;
+    src: string;
+    altText: string;
+    
+    constructor(id: string, src: string, altText: string) {
+        this.id = id;
+        this.src = src;
+        this.altText = altText;
+    }
+
+    validate(): boolean {
+        if (!v4.validate(this.id)) return false;    // id không hợp lệ
+        if (!isValidUrl(this.src)) return false;    // src không hợp lệ
+        if (!isValidStringWithMinLen(this.altText, 2)) return false;    // alt text của ảnh không hợp lệ
+        return true;    // Xác nhận ảnh hợp lệ
+    }
+
+    logData(): void {
+        console.log(`
+        Image:
+            id: ${this.id}
+            src: ${this.src}
+            alt-text: ${this.altText}
+        `);
+    }
+}
