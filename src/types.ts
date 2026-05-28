@@ -1,5 +1,5 @@
 import { v4 } from "@std/uuid";
-import { isValidStringWithMinLen, isValidUrl, isPageTypeValue } from "./funcs.ts";
+import { isValidStringWithMinLen, isValidUrl, isPageTypeValue, isLanguageValue } from "./funcs.ts";
 
 // ngôn ngữ hỗ trợ
 export enum Language {
@@ -42,9 +42,10 @@ export class Page implements IData {
     source: string; // Nguồn của page (vd: www.google.com)
     addedDate: Date;    // Ngày được thêm vào
     updateDate: Date;   // Ngày được cập nhật
+    language: Language;
     content: string;    // nội dung html của page
 
-    constructor(id: string, url: string, title: string, pubDate: Date, type: PageType, source: string, addedDate: Date, updateDate: Date, content: string) {
+    constructor(id: string, url: string, title: string, pubDate: Date, type: PageType, source: string, addedDate: Date, updateDate: Date, language: Language, content: string) {
         this.id = id;
         this.url = url;
         this.title = title;
@@ -53,6 +54,7 @@ export class Page implements IData {
         this.source = source;
         this.addedDate = addedDate;
         this.updateDate = updateDate;
+        this.language = language;
         this.content = content;
     }
 
@@ -63,6 +65,7 @@ export class Page implements IData {
         if (!isValidStringWithMinLen(this.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
         if (!isPageTypeValue(this.type)) return false;  // Kiểm tra kiểu của page
         if (this.source.length === 0) return false;   // source không được rỗng
+        if (!isLanguageValue(this.language)) return false;  // Kiểm tra kiểu Language
         if (this.content.length === 0) return false;    // page content không được rỗng
         return true;    // xác nhận validate hợp lệ
     }
@@ -79,6 +82,7 @@ export class Page implements IData {
             source: ${this.source}
             added date: ${this.addedDate.toDateString()}
             update date: ${this.updateDate.toDateString()}
+            language: ${this.language}
             content: ${this.content.slice(0, 100)}
         `);
     }
