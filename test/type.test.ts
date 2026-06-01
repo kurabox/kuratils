@@ -1,7 +1,7 @@
 import { assert, assertFalse } from "@std/assert";
 import { PageType } from "../src/types.ts";
-import { isPageTypeValue } from "../src/funcs.ts";
-import { generateV4UUID, Image, Language, Page } from "../mod.ts";
+import { isPageTypeValue, logPage, validatePage } from "../src/funcs.ts";
+import { generateV4UUID, Image, Language, logImage, Page, validateImage } from "../mod.ts";
 
 Deno.test("DataType test", () => {
     const dataType = PageType.Web;
@@ -12,151 +12,95 @@ Deno.test("DataType test", () => {
 });
 
 Deno.test("Page type test", (): void => {
-    const testPage: Page = new Page(
-        generateV4UUID(),
-        "https://example.com",
-        "Valid title",
-        null,
-        PageType.Web,
-        new URL("https://example.com").hostname,
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "This is Page content",
-    );
-    assert(testPage.validate());
-
-    testPage.logData();
-
-    // invalid uuid
-    const testPage2: Page = new Page(
-        "dddf", // v4 uuid không hợp lệ
-        "https://example.com",
-        "Valid title",
-        Date.now(),
-        PageType.Web,
-        new URL("https://example.com").hostname,
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "This is Page content",
-    );
-    assertFalse(testPage2.validate());
-
-    // invalid url
-    const testPage3: Page = new Page(
-        generateV4UUID(),
-        "httpsexample",
-        "Valid title",
-        Date.now(),
-        PageType.Web,
-        new URL("https://example.com").hostname,
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "This is Page content",
-    );
-    assertFalse(testPage3.validate());
+    const validPage: Page = {
+        id: generateV4UUID(),
+        url: "https://example.com",
+        title: "Page title",
+        puslishTimestamp: Date.now(),
+        type: PageType.Web,
+        source: "example.com",
+        createdTimestamp: Date.now(),
+        updateTimestamp: Date.now(),
+        language: Language.Vietnamese,
+        content: "This is page content.",
+    };
+    assert(validatePage(validPage));
+    logPage(validPage);
 
     // Invalid title
-    const testPage4: Page = new Page(
-        generateV4UUID(),
-        "https://example.com",
-        "",
-        Date.now(),
-        PageType.Web,
-        new URL("https://example.com").hostname,
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "This is Page content",
-    );
-    assertFalse(testPage4.validate());
+    let invalidPage: Page = validPage;
+    invalidPage.id = "invalid id";
+    assertFalse(validatePage(invalidPage));
 
-    // invalid page source
-    const testPage5: Page = new Page(
-        generateV4UUID(),
-        "https://example.com",
-        "Valid title",
-        Date.now(),
-        PageType.Web,
-        "",
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "This is Page content",
-    );
-    assertFalse(testPage5.validate());
+    // Invalid url
+    invalidPage = validPage;
+    invalidPage.url = "invalid url";
+    assertFalse(validatePage(invalidPage));
 
-    // Invalid language
-    const testPage6: Page = new Page(
-        generateV4UUID(),
-        "https://example.com",
-        "Valid title",
-        Date.now(),
-        PageType.Web,
-        "",
-        Date.now(),
-        Date.now(),
-        "" as Language, // Ép sai kiểu để test
-        "This is Page content",
-    );
-    assertFalse(testPage6.validate());
-
-    // invalid page content
-    const testPage7: Page = new Page(
-        generateV4UUID(),
-        "https://example.com",
-        "Valid title",
-        Date.now(),
-        PageType.Web,
-        new URL("https://example.com").hostname,
-        Date.now(),
-        Date.now(),
-        Language.English,
-        "",
-    );
-    assertFalse(testPage7.validate());
+    // Invalid title
+    invalidPage = validPage;
+    invalidPage.title = "$$";
+    assertFalse(validatePage(invalidPage));
 
     // Invalid puslish timestamp
-    let testPage8: Page = testPage;
-    testPage8.puslishTimestamp = 0;
-    assertFalse(testPage8.validate());
+    invalidPage = validPage;
+    invalidPage.puslishTimestamp = 0;
+    assertFalse(validatePage(invalidPage));
 
-    // Invalid created timestamp
-    testPage8 = testPage;
-    testPage8.createdTimestamp = 0;
-    assertFalse(testPage8.validate());
+    // Invalid page type
+    invalidPage = validPage;
+    invalidPage.type = "invalid page type" as PageType;
+    assertFalse(validatePage(invalidPage));
 
-    // Invalid update timestamp
-    testPage8 = testPage;
-    testPage8.updateTimestamp = 0;
-    assertFalse(testPage8.validate());
+    // invalid source
+    invalidPage = validPage;
+    invalidPage.source = "";
+    assertFalse(validatePage(invalidPage));
+
+    // invalid language
+    invalidPage = validPage;
+    invalidPage.language = "unsupported" as Language;
+    assertFalse(validatePage(invalidPage));
+
+    // Invaid content
+    invalidPage = validPage;
+    invalidPage.content = "#";
+    assertFalse(validatePage(invalidPage));
 });
 
 Deno.test("Image type test", (): void => {
-    const testImage1: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text", generateV4UUID(), Date.now());
-    assert(testImage1.validate());
-    testImage1.logData();
+    const validImage: Image = {
+        id: generateV4UUID(),
+        src: "https://example.com/img01.png",
+        altText: "this is fish",
+        pageId: generateV4UUID(),
+        createdTimestamp: Date.now(),
+    };
+    assert(validateImage(validImage));
+    logImage(validImage);
 
-    // Invalid id
-    const testImage2: Image = new Image("invalid id", "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "image alt text", generateV4UUID(), Date.now());
-    assertFalse(testImage2.validate());
+    // invalid id
+    let invalidImage: Image = validImage;
+    invalidImage.id = "invalid id";
+    assertFalse(validateImage(invalidImage));
 
-    // invalid image src
-    const testImage3: Image = new Image(generateV4UUID(), "klax", "image alt text", generateV4UUID(), Date.now());
-    assertFalse(testImage3.validate());
+    // invalid src
+    invalidImage = validImage;
+    invalidImage.src = "invalid source";
+    assertFalse(validateImage(invalidImage));
 
-    // invalid altText
-    const testImage4: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "1", generateV4UUID(), Date.now());
-    assertFalse(testImage4.validate());
+    // invalid alt text
+    invalidImage = validImage;
+    invalidImage.altText = "@@@";
+    assertFalse(validateImage(invalidImage));
 
-    // invalid pageId
-    const testImage5: Image = new Image(generateV4UUID(), "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/08/updated-by-umair-malik-on-june-12-2024-with-new-cards-introduced-every-month-the-meta-is-constantly-evolving-and-new-cards-find-their-way-into-multiple-decks-especially-these-ones-we-v-2024-08-22t175017-108.jpg", "1", "invalid uuid", Date.now());
-    assertFalse(testImage5.validate());
+    // invalid page id
+    invalidImage = validImage;
+    invalidImage.pageId = "invalid page id";
+    assertFalse(validateImage(invalidImage));
 
     // invalid created timestamp
-    const testImage9: Image = testImage1;
-    testImage9.createdTimestamp = -2.9;
-    assertFalse(testImage9.validate());
+    invalidImage = validImage;
+    invalidImage.createdTimestamp = -233;
+    assertFalse(validateImage(invalidImage));
 });

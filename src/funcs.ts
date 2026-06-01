@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
 import { eld } from "eld/large";
-import { Language, PageType, CrawlStatus } from "./types.ts";
+import { Language, PageType, CrawlStatus, Page, Image } from "./types.ts";
+import { v4 } from "@std/uuid";
 
 export function msgLog(msg: string): void {
     console.log(`[${new Date().toString()}] ${msg}`);
@@ -56,4 +57,57 @@ export function isPageTypeValue(value: unknown): boolean {
 // Hàm kiểm tra xem biến bất kỳ có thuộc kiểu CrawlStatus hay không
 export function isCrawlStatusValue(value: unknown): boolean {
     return Object.values(CrawlStatus).includes(value as CrawlStatus);
+}
+
+// Hàm kiểm tra tính hợp lệ của Page
+export function validatePage(page: Page): boolean {
+    if (!v4.validate(page.id)) return false;    // kiểm tra uuid
+    if (!isValidUrl(page.url)) return false;    // Kiểm tra url của page
+    if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
+    if (page.puslishTimestamp !== null && page.puslishTimestamp <= 0) return false; // Kiểm tra thời gian xuất bản của page
+    if (!isPageTypeValue(page.type)) return false;  // Kiểm tra kiểu của page
+    if (page.source.length === 0) return false;   // source không được rỗng
+    if (page.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo
+    if (page.updateTimestamp <= 0) return false;    // Kiểm tra timestamp cập nhật (trong trường hợp page vừa được khởi tạo thì createdTimestamp = updateTimestamp)
+    if (!isLanguageValue(page.language)) return false;  // Kiểm tra kiểu Language
+    if (!isValidStringWithMinLen(page.content, 2)) return false;    // page content không được rỗng
+    return true;    // xác nhận validate hợp lệ
+}
+
+// Hàm kiểm tra tính hợp lệ của Image
+export function validateImage(image: Image): boolean {
+    if (!v4.validate(image.id)) return false;    // id không hợp lệ
+    if (!isValidUrl(image.src)) return false;    // src không hợp lệ
+    if (!isValidStringWithMinLen(image.altText, 2)) return false;    // alt text của ảnh không hợp lệ
+    if (!v4.validate(image.pageId)) return false;    // pageId không hợp lệ
+    if (image.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo
+    return true;    // Xác nhận ảnh hợp lệ
+}
+
+// Hàm log data cho Page
+export function logPage(page: Page): void {
+    console.log(`
+    Page Data:
+        id: ${page.id}
+        url: ${page.url}
+        title: ${page.title}
+        publication timesstamp: ${(page.puslishTimestamp !== null) ? new Date(page.puslishTimestamp).toDateString() : "No info"}
+        type: ${page.type.toString()}
+        source: ${page.source}
+        created timestamp: ${new Date(page.createdTimestamp).toDateString()}
+        update date: ${new Date(page.updateTimestamp).toDateString()}
+        language: ${page.language}
+        content: ${page.content.slice(0, 100)}
+    `);
+}
+
+export function logImage(image: Image): void {
+    console.log(`
+    Image:
+        id: ${image.id}
+        src: ${image.src}
+        alt text: ${image.altText}
+        page id: ${image.pageId}
+        created timestamp: ${new Date(image.createdTimestamp).toDateString()}
+    `);
 }
