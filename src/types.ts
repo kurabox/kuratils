@@ -23,7 +23,7 @@ export enum CrawlStatus {
 }
 
 // Kiểu lưu trữ Page
-export type Page =  {
+export type PageData =  {
     id: string; // Page id (string v4 uuid của Deno)
     url: string;    // url của page
     title: string;  // Tiêu đề page
@@ -37,7 +37,7 @@ export type Page =  {
 };
 
 // Kiểu dữ liệu Image
-export type Image = {
+export type ImageData = {
     id: string;
     src: string;
     altText: string;
