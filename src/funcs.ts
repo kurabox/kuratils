@@ -85,23 +85,24 @@ export function validateImage(image: ImageData): boolean {
 }
 
 // Hàm log data cho Page
-export function logPage(page: PageData): void {
+export function logPageData(page: PageData): void {
     console.log(`
     Page Data:
         id: ${page.id}
         url: ${page.url}
         title: ${page.title}
-        publication timesstamp: ${(page.puslishTimestamp !== null) ? new Date(page.puslishTimestamp).toDateString() : "No info"}
+        publication timestamp: ${(page.puslishTimestamp !== null) ? new Date(page.puslishTimestamp).toDateString() : "No info"}
         type: ${page.type.toString()}
         source: ${page.source}
         created timestamp: ${new Date(page.createdTimestamp).toDateString()}
         update date: ${new Date(page.updateTimestamp).toDateString()}
         language: ${page.language}
-        content: ${page.content.slice(0, 100)}
+        content:
+            ${page.content}
     `);
 }
 
-export function logImage(image: ImageData): void {
+export function logImageData(image: ImageData): void {
     console.log(`
     Image:
         id: ${image.id}
