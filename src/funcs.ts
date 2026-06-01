@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { eld } from "eld/large";
-import { Language, PageType, CrawlStatus, Page, Image } from "./types.ts";
+import { Language, PageType, CrawlStatus, PageData, ImageData } from "./types.ts";
 import { v4 } from "@std/uuid";
 
 export function msgLog(msg: string): void {
@@ -60,7 +60,7 @@ export function isCrawlStatusValue(value: unknown): boolean {
 }
 
 // Hàm kiểm tra tính hợp lệ của Page
-export function validatePage(page: Page): boolean {
+export function validatePage(page: PageData): boolean {
     if (!v4.validate(page.id)) return false;    // kiểm tra uuid
     if (!isValidUrl(page.url)) return false;    // Kiểm tra url của page
     if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
@@ -75,7 +75,7 @@ export function validatePage(page: Page): boolean {
 }
 
 // Hàm kiểm tra tính hợp lệ của Image
-export function validateImage(image: Image): boolean {
+export function validateImage(image: ImageData): boolean {
     if (!v4.validate(image.id)) return false;    // id không hợp lệ
     if (!isValidUrl(image.src)) return false;    // src không hợp lệ
     if (!isValidStringWithMinLen(image.altText, 2)) return false;    // alt text của ảnh không hợp lệ
@@ -85,7 +85,7 @@ export function validateImage(image: Image): boolean {
 }
 
 // Hàm log data cho Page
-export function logPage(page: Page): void {
+export function logPage(page: PageData): void {
     console.log(`
     Page Data:
         id: ${page.id}
@@ -101,7 +101,7 @@ export function logPage(page: Page): void {
     `);
 }
 
-export function logImage(image: Image): void {
+export function logImage(image: ImageData): void {
     console.log(`
     Image:
         id: ${image.id}
