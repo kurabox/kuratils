@@ -27,7 +27,7 @@ export type PageData =  {
     id: string; // Page id (string v4 uuid của Deno)
     url: string;    // url của page
     title: string;  // Tiêu đề page
-    puslishTimestamp: number | null;  // Ngày đăng tải của page (nếu không có thì không phải là kiểu news)
+    publishTimestamp: number | null;  // Ngày đăng tải của page (nếu không có thì không phải là kiểu news)
     type: PageType; // Loại page (vd: web, product, video, v.v)
     source: string; // Nguồn của page (vd: www.google.com)
     createdTimestamp: number;    // Ngày được thêm vào

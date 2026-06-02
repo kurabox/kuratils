@@ -64,7 +64,7 @@ export function validatePageData(page: PageData): boolean {
     if (!v4.validate(page.id)) return false;    // kiểm tra uuid
     if (!isValidUrl(page.url)) return false;    // Kiểm tra url của page
     if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
-    if (page.puslishTimestamp !== null && page.puslishTimestamp <= 0) return false; // Kiểm tra thời gian xuất bản của page
+    if (page.publishTimestamp !== null && page.publishTimestamp <= 0) return false; // Kiểm tra thời gian xuất bản của page
     if (!isPageTypeValue(page.type)) return false;  // Kiểm tra kiểu của page
     if (page.source.length === 0) return false;   // source không được rỗng
     if (page.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo
@@ -91,7 +91,7 @@ export function logPageData(page: PageData): void {
         id: ${page.id}
         url: ${page.url}
         title: ${page.title}
-        publication timestamp: ${(page.puslishTimestamp !== null) ? new Date(page.puslishTimestamp).toDateString() : "No info"}
+        publication timestamp: ${(page.publishTimestamp !== null) ? new Date(page.publishTimestamp).toDateString() : "No info"}
         type: ${page.type.toString()}
         source: ${page.source}
         created timestamp: ${new Date(page.createdTimestamp).toDateString()}
