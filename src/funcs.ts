@@ -60,7 +60,7 @@ export function isCrawlStatusValue(value: unknown): boolean {
 }
 
 // Hàm kiểm tra tính hợp lệ của Page
-export function validatePage(page: PageData): boolean {
+export function validatePageData(page: PageData): boolean {
     if (!v4.validate(page.id)) return false;    // kiểm tra uuid
     if (!isValidUrl(page.url)) return false;    // Kiểm tra url của page
     if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
@@ -75,7 +75,7 @@ export function validatePage(page: PageData): boolean {
 }
 
 // Hàm kiểm tra tính hợp lệ của Image
-export function validateImage(image: ImageData): boolean {
+export function validateImageData(image: ImageData): boolean {
     if (!v4.validate(image.id)) return false;    // id không hợp lệ
     if (!isValidUrl(image.src)) return false;    // src không hợp lệ
     if (!isValidStringWithMinLen(image.altText, 2)) return false;    // alt text của ảnh không hợp lệ
