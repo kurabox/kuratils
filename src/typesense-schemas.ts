@@ -1,10 +1,10 @@
 import { CollectionCreateSchema } from "typesense";
 
 /**
- * Cấu trúc Collection Scheme dùng cho Typesense
+ * Cấu trúc Collection Schema dùng cho Typesense
 */
 
-// Page Collection Scheme
+// Page Collection Schema
 export const PageScheme: CollectionCreateSchema = {
     "name": "pages",
     "fields": [
