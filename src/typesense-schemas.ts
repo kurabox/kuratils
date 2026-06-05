@@ -1,9 +1,11 @@
+import { CollectionCreateSchema } from "typesense";
+
 /**
  * Cấu trúc Collection Scheme dùng cho Typesense
 */
 
 // Page Collection Scheme
-export const PageScheme = {
+export const PageScheme: CollectionCreateSchema = {
     "name": "pages",
     "fields": [
         { "name": "id", "type": "string" }, // id: string
@@ -21,7 +23,7 @@ export const PageScheme = {
 };
 
 // Image collection Scheme
-export const ImageScheme = {
+export const ImageScheme: CollectionCreateSchema = {
     "name": "images",
     "fields": [
         { "name": "id", "type": "string" }, // image id
