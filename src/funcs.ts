@@ -2,7 +2,6 @@ import * as cheerio from "cheerio";
 import { eld } from "eld/large";
 import { Language, PageType, CrawlStatus, PageData, ImageData } from "./data-types.ts";
 import { v4 } from "@std/uuid";
-import Typesense from "typesense";
 
 // Hàm log 
 export function msgLog(msg: string): string {
