@@ -1,21 +1,23 @@
 import * as cheerio from "cheerio";
 import { eld } from "eld/large";
-import { Language, PageType, CrawlStatus, PageData, ImageData } from "./types.ts";
+import { Language, PageType, CrawlStatus, PageData, ImageData } from "./data-types.ts";
 import { v4 } from "@std/uuid";
+import Typesense from "typesense";
 
-export function msgLog(msg: string): void {
-    console.log(`[${new Date().toString()}] ${msg}`);
+// Hàm log 
+export function msgLog(msg: string): string {
+    const log: string = `[${new Date().toString().split(" (")[0]}] ${msg}`;
+    console.log(log);
+    return log; // Trả ra log string sao khi đã xuất ra console
 }
 
 // Kiểm tra tính hợp lệ của url
-export function isValidUrl(urlStr: string): boolean {
+export function validateUrl(urlStr: string): boolean {
     try {
         new URL(urlStr);
         return true;
-    } catch (error) {
-        const msg = `${error}`;
-        msgLog(msg);
-        return false;
+    } catch {
+        return false;   // Trường hợp url không hợp lệ
     }
 }
 
@@ -62,7 +64,7 @@ export function isCrawlStatusValue(value: unknown): boolean {
 // Hàm kiểm tra tính hợp lệ của Page
 export function validatePageData(page: PageData): boolean {
     if (!v4.validate(page.id)) return false;    // kiểm tra uuid
-    if (!isValidUrl(page.url)) return false;    // Kiểm tra url của page
+    if (!validateUrl(page.url)) return false;    // Kiểm tra url của page
     if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
     if (page.publishTimestamp !== null && page.publishTimestamp <= 0) return false; // Kiểm tra thời gian xuất bản của page
     if (!isPageTypeValue(page.type)) return false;  // Kiểm tra kiểu của page
@@ -77,7 +79,7 @@ export function validatePageData(page: PageData): boolean {
 // Hàm kiểm tra tính hợp lệ của Image
 export function validateImageData(image: ImageData): boolean {
     if (!v4.validate(image.id)) return false;    // id không hợp lệ
-    if (!isValidUrl(image.src)) return false;    // src không hợp lệ
+    if (!validateUrl(image.src)) return false;    // src không hợp lệ
     if (!isValidStringWithMinLen(image.altText, 2)) return false;    // alt text của ảnh không hợp lệ
     if (!v4.validate(image.pageId)) return false;    // pageId không hợp lệ
     if (image.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo

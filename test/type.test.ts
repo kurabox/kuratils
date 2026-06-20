@@ -1,5 +1,5 @@
 import { assert, assertFalse } from "@std/assert";
-import { PageType } from "../src/types.ts";
+import { PageType } from "../src/data-types.ts";
 import { isPageTypeValue, logPage, validatePage } from "../src/funcs.ts";
 import { generateV4UUID, Image, Language, logImage, Page, validateImage } from "../mod.ts";
 

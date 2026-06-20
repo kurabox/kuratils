@@ -1,7 +1,7 @@
 import { assertEquals, assertFalse } from "@std/assert";
 import { isCrawlStatusValue, isValidStringWithMinLen, validateHTMLString } from "../src/funcs.ts";
-import { Language } from "../src/types.ts";
-import { CrawlStatus } from "../src/types.ts";
+import { Language } from "../src/data-types.ts";
+import { CrawlStatus } from "../src/data-types.ts";
 import { assert } from "node:console";
 
 Deno.test("isValidStringWithMinLen() test", (): void => {

@@ -1,6 +1,6 @@
 import { assertEquals, assertFalse } from "@std/assert";
 import { eld } from "eld/large";
-import { Language, detectLanguage, isLanguageValue } from "../src/types.ts";
+import { Language, detectLanguage, isLanguageValue } from "../src/data-types.ts";
 
 Deno.test("Language detector test", (): void => {
     const jpStr: string = "アニメ";

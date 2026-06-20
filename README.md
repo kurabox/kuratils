@@ -1,2 +1,2 @@
-# Kurabox - data-utils
-Cấu trúc dữ liệu (tạm thời) giúp operator tương tác với crawler
+# kuratils
+Một tập hợp các type và function được sử dụng chung bởi các thành phần khác nhau trong hệ thống.
