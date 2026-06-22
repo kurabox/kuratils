@@ -32,7 +32,7 @@ export function isValidStringWithMinLen(str: string, minLen: number): boolean {
 }
 
 // Kiểm tra một html có hợp lệ không
-export function validateHTMLString(html: string): boolean {
+export function validateHtmlString(html: string): boolean {
     const $: cheerio.CheerioAPI = cheerio.load(html);
     const hasBodyTag: boolean = $("body").length > 0;   // Kiểm tra thẻ <body>
     const hasContent: boolean = $("body").text().trim().length > 0; // Kiểm tra thẻ nội dung
