@@ -1,5 +1,5 @@
 import { assertEquals, assertFalse } from "@std/assert";
-import { isCrawlStatusValue, isValidStringWithMinLen, validateHTMLString } from "../src/funcs.ts";
+import { msgLog, isCrawlStatusValue, isValidStringWithMinLen, validateHtmlString } from "../src/funcs.ts";
 import { Language } from "../src/data-types.ts";
 import { CrawlStatus } from "../src/data-types.ts";
 import { assert } from "node:console";
@@ -46,7 +46,7 @@ Deno.test("enum test", (): void => {
     assertEquals(typeof language, typeof language);
 });
 
-Deno.test("validateHTMLString function test", () => {
+Deno.test("validateHtmlString function test", () => {
     // Html hợp lệ
     const validHtmlStr: string = `
         <!DOCTYPE html>
@@ -64,7 +64,7 @@ Deno.test("validateHTMLString function test", () => {
         </body>
         </html>
     `;
-    assertEquals(validateHTMLString(validHtmlStr), true);
+    assertEquals(validateHtmlString(validHtmlStr), true);
 
     // không có nội dung nào trong thẻ body
     const htmlStringWithNoBodyContent: string = `
@@ -78,7 +78,7 @@ Deno.test("validateHTMLString function test", () => {
         </body>
         </html>
     `;
-    assertEquals(validateHTMLString(htmlStringWithNoBodyContent), false);
+    assertEquals(validateHtmlString(htmlStringWithNoBodyContent), false);
 
     // Không có thẻ body
     const htmlStrWithNoBodyTag: string = `
@@ -90,7 +90,7 @@ Deno.test("validateHTMLString function test", () => {
         </head>
         </html>
     `;
-    assertFalse(validateHTMLString(htmlStrWithNoBodyTag));
+    assertFalse(validateHtmlString(htmlStrWithNoBodyTag));
 });
 
 Deno.test("isCrawlStatusValue function test", (): void => {
@@ -102,4 +102,9 @@ Deno.test("isCrawlStatusValue function test", (): void => {
 
     const strValue = "some string";
     assertFalse(isCrawlStatusValue(strValue));
+});
+
+Deno.test("msgLog test", (): void => {
+    const msg: string = "This is the log";
+    assert(msgLog(msg) === msg);
 });
