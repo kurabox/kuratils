@@ -30,9 +30,11 @@ export class Page implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!validateUrl(this.url)) return false;
-        return true;
+        if (!v4.validate(this.id) || !validateUrl(this.url)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
@@ -51,11 +53,16 @@ export class PageStatus implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!v4.validate(this.pageId)) return false;   
-        if (this.createdTimestamp <= 0) return false;   // timestamp cần lớn hơn 0
-        if (this.updateTimestamp <= 0) return false;    // timestamp cần lớn hơn 0
-        return true;
+        if (
+            !v4.validate(this.id) ||
+            !v4.validate(this.pageId) ||
+            this.createdTimestamp <= 0 ||
+            this.updateTimestamp <= 0
+        ) { 
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
@@ -78,13 +85,18 @@ export class PageMeta implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!v4.validate(this.pageId)) return false;
-        if (!isValidStringWithMinLen(this.title, 2)) return false;
-        if (this.publicationTimestamp !== null && this.publicationTimestamp <= 0) return false;
-        if (!isPageTypeValue(this.pageType)) return false;
-        if (!sourceCheckingRegExp.test(this.source)) return false;
-        return true;
+        if (
+            !v4.validate(this.id) ||
+            !v4.validate(this.pageId) ||
+            !isValidStringWithMinLen(this.title, 2) ||
+            this.publicationTimestamp !== null && this.publicationTimestamp <= 0 ||
+            !isPageTypeValue(this.pageType) ||
+            !sourceCheckingRegExp.test(this.source)
+        ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
@@ -101,10 +113,11 @@ export class HtmlContent implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!v4.validate(this.pageId)) return false;
-        if (!validateHtmlString(this.htmlData)) return false;
-        return true;       
+        if (!v4.validate(this.id) || !v4.validate(this.pageId) || !validateHtmlString(this.htmlData)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
@@ -121,10 +134,11 @@ export class PageLink implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!v4.validate(this.fromPageId)) return false;
-        if (!v4.validate(this.toPageId)) return false;
-        return true;
+        if (!v4.validate(this.id) || !v4.validate(this.fromPageId) || !v4.validate(this.toPageId)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
@@ -145,11 +159,16 @@ export class Image implements Entities {
     }
 
     validate(): boolean {
-        if (!v4.validate(this.id)) return false;
-        if (!v4.validate(this.pageId)) return false;
-        if (!validateUrl(this.imageUrl)) return false;
-        if (!isValidStringWithMinLen(this.altText, 2)) return false;
-        if (!sourceCheckingRegExp.test(this.source)) return false;
-        return true;
+        if (
+            !v4.validate(this.id) ||
+            !v4.validate(this.pageId) ||
+            !validateUrl(this.imageUrl) ||
+            !isValidStringWithMinLen(this.altText, 2) ||
+            !sourceCheckingRegExp.test(this.source)
+        ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
