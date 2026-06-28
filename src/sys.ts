@@ -6,8 +6,8 @@ import { v4 } from "@std/uuid";
 import { generateV4UUID } from "./funcs.ts";
 
 export enum LogType {
-    CrawlerLog, // log của crawler
-    OperatorLog, // log của back-end
+    CrawlerLog = "crawler_log", // log của crawler
+    OperatorLog = "operator_log", // log của back-end
 }
 
 export type Log = {
