@@ -3,13 +3,6 @@ import { eld } from "eld/large";
 import { Language, PageType, CrawlStatus, PageData, ImageData } from "./data-types.ts";
 import { v4 } from "@std/uuid";
 
-// Hàm log 
-export function msgLog(msg: string): string {
-    const log: string = `[${new Date().toString().split(" (")[0]}] ${msg}`;
-    console.log(log);
-    return log; // Trả ra log string sao khi đã xuất ra console
-}
-
 // Kiểm tra tính hợp lệ của url
 export function validateUrl(urlStr: string): boolean {
     try {
