@@ -9,6 +9,9 @@ import {
     PageLink,
     Image,
 } from "../src/maria-entities.ts";
+import { pageSchema } from "../src/maria-schema.ts";
+import { buildInsertValuesString } from "../mod.ts";
+import { assert } from "node:console";
 
 Deno.test("Page entity validation", () => {
     const validPage = new Page(generateV4UUID(), "https://a.com");
@@ -85,4 +88,24 @@ Deno.test("Image entity validation", () => {
         "invalid-source"
     );
     assertEquals(invalidImage.validate(), false);
+});
+
+Deno.test("build query values string from entities class test", (): void => {
+    function generatePageEntities(quantity: number): Page[] {
+        const pages: Page[] = [];
+        if (quantity <= 0) return pages;
+        for (let i: number = 0; i <= quantity; i++) {
+            pages.push(new Page(
+                generateV4UUID(),
+                "https://www.example.com",
+            ));
+        }
+        return pages;
+    }
+
+    const pages: Page[] = generatePageEntities(10);
+    assert(pages.length === 10);
+    const pageValuesStr: string | null = buildInsertValuesString(pages, pageSchema);
+    assert(pageValuesStr !== null);
+    console.log(pageValuesStr);
 });
