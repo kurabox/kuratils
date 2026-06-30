@@ -1,8 +1,9 @@
 import { assertEquals, assertFalse } from "@std/assert";
-import { msgLog, isCrawlStatusValue, isValidStringWithMinLen, validateHtmlString } from "../src/funcs.ts";
+import { isCrawlStatusValue, isValidStringWithMinLen, validateHtmlString } from "../src/funcs.ts";
 import { Language } from "../src/data-types.ts";
 import { CrawlStatus } from "../src/data-types.ts";
 import { assert } from "node:console";
+import { msgLog, LogType } from "../src/sys.ts";
 
 Deno.test("isValidStringWithMinLen() test", (): void => {
     // Latin
@@ -106,5 +107,5 @@ Deno.test("isCrawlStatusValue function test", (): void => {
 
 Deno.test("msgLog test", (): void => {
     const msg: string = "This is the log";
-    assert(msgLog(msg) === msg);
+    assert(msgLog(msg, LogType.OperatorSearchLog).content === msg);
 });

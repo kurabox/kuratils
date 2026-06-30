@@ -55,27 +55,37 @@ export function isCrawlStatusValue(value: unknown): boolean {
 
 // Hàm kiểm tra tính hợp lệ của Page
 export function validatePageData(page: PageData): boolean {
-    if (!v4.validate(page.id)) return false;    // kiểm tra uuid
-    if (!validateUrl(page.url)) return false;    // Kiểm tra url của page
-    if (!isValidStringWithMinLen(page.title, 2)) return false;  // Kiểm tra title (cần tối thiểu 2 ký tự)
-    if (page.publishTimestamp !== null && page.publishTimestamp <= 0) return false; // Kiểm tra thời gian xuất bản của page
-    if (!isPageTypeValue(page.type)) return false;  // Kiểm tra kiểu của page
-    if (page.source.length === 0) return false;   // source không được rỗng
-    if (page.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo
-    if (page.updateTimestamp <= 0) return false;    // Kiểm tra timestamp cập nhật (trong trường hợp page vừa được khởi tạo thì createdTimestamp = updateTimestamp)
-    if (!isLanguageValue(page.language)) return false;  // Kiểm tra kiểu Language
-    if (!isValidStringWithMinLen(page.content, 2)) return false;    // page content không được rỗng
-    return true;    // xác nhận validate hợp lệ
+    if (
+        !v4.validate(page.id) ||    // kiểm tra uuid
+        !validateUrl(page.url) ||   // Kiểm tra url của page
+        !isValidStringWithMinLen(page.title, 2) ||  // Kiểm tra title (cần tối thiểu 2 ký tự)
+        page.publishTimestamp !== null && page.publishTimestamp <= 0 || // Kiểm tra thời gian xuất bản của page
+        !isPageTypeValue(page.type) ||  // Kiểm tra kiểu của page
+        page.source.length === 0 || // source không được rỗng
+        page.createdTimestamp <= 0 ||   // Kiểm tra timestamp khởi tạo
+        page.updateTimestamp <= 0 ||    // // Kiểm tra timestamp cập nhật (trong trường hợp page vừa được khởi tạo thì createdTimestamp = updateTimestamp)
+        !isLanguageValue(page.language) ||  // // Kiểm tra kiểu Language
+        !isValidStringWithMinLen(page.content, 2)   // // page content không được rỗng
+    ) {
+        return false;
+    } else {
+        return true;    // xác nhận validate hợp lệ
+    }
 }
 
 // Hàm kiểm tra tính hợp lệ của Image
 export function validateImageData(image: ImageData): boolean {
-    if (!v4.validate(image.id)) return false;    // id không hợp lệ
-    if (!validateUrl(image.src)) return false;    // src không hợp lệ
-    if (!isValidStringWithMinLen(image.altText, 2)) return false;    // alt text của ảnh không hợp lệ
-    if (!v4.validate(image.pageId)) return false;    // pageId không hợp lệ
-    if (image.createdTimestamp <= 0) return false;   // Kiểm tra timestamp khởi tạo
-    return true;    // Xác nhận ảnh hợp lệ
+    if (
+        !v4.validate(image.id) ||   // id không hợp lệ
+        !validateUrl(image.src) ||  // src không hợp lệ
+        !isValidStringWithMinLen(image.altText, 2) ||   // alt text của ảnh không hợp lệ
+        !v4.validate(image.pageId) ||   // pageId không hợp lệ
+        image.createdTimestamp <= 0 // Kiểm tra timestamp khởi tạo
+    ) {
+        return false;
+    } else {
+        return true;    // Xác nhận ảnh hợp lệ
+    }
 }
 
 // Hàm log data cho Page
