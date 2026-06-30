@@ -8,7 +8,7 @@ import {
     HtmlContent,
     PageLink,
     Image,
-} from "../src/data-entities.ts";
+} from "../src/maria-entities.ts";
 
 Deno.test("Page entity validation", () => {
     const validPage = new Page(generateV4UUID(), "https://a.com");

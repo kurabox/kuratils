@@ -2,12 +2,13 @@
  * Chức năng ghi log thống nhất cho tất cả các chương trình trong kurabox
 */
 
-import { v4 } from "@std/uuid";
 import { generateV4UUID } from "./funcs.ts";
+import { Pool, Connection } from "mariadb";
 
 export enum LogType {
     CrawlerLog = "crawler_log", // log của crawler
-    OperatorLog = "operator_log", // log của back-end
+    OperatorCrudLog = "operator_crud_log", // log thao tác data của back-end
+    OperatorSearchLog = "operator_search_log"   // log tìm kiếm của backend
 }
 
 export type Log = {
@@ -16,22 +17,6 @@ export type Log = {
     content: string;
     type: LogType; 
 };
-
-// RegExp dùng để kiểm tra định dạng log
-const logFormatRegExp: RegExp = /^\[[A-Z][a-z]{2} [A-Z][a-z]{2} \d{1,2} \d{4} \d{2}:\d{2}:\d{2}(?: GMT[+-]?\d{4}| UTC)?\].+$/;
-
-export function validateLog(log: Log): boolean {
-    if (
-        !v4.validate(log.id) ||
-        log.timestamp <= 0 ||
-        !logFormatRegExp.test(log.content) ||
-        !Object.values(LogType).includes(log.type as LogType)
-    ) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 // Hàm log 
 export function msgLog(msg: string, logType: LogType): Log {
@@ -45,3 +30,19 @@ export function msgLog(msg: string, logType: LogType): Log {
         type: logType,
     };
 }
+
+// Hàm tải logs chỉ định vào database
+// export async function transferLogsToDatabase(pool: Pool, logType: LogType, logs: Log[]): Promise<void> {
+//     // Khởi tạo string chứa log values từ Log[] để dùng trong query
+    
+//     let conn: Connection;
+//     // Khởi tạo kết nối
+//     try {
+//         conn = await pool.getConnection();
+//         const res = await conn.query(`
+//             insert into ${logType.toString()} (id, timestamp, log_content)
+//             values
+//             ()
+//         `);
+//     }
+// }
