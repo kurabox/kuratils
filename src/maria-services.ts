@@ -6,6 +6,12 @@ export type InsertableSchema<T> = {
     fields: (keyof T)[];    // fields chứa toàn bộ các thuộc tính có thể có trong một entities type
 };
 
+// Database type: các database đang được chương trình sử dụng
+export enum Database {
+    SearchDatabase = "search-db-name",  // Database dùng cho search engine
+    LogDatabase = "log-db-name",   // Database dùng cho logs
+}
+
 // Hàm kiểm tra DbConnectionInfo
 function validatePoolConfig(config: PoolConfig): boolean {
     if (
@@ -23,19 +29,20 @@ function validatePoolConfig(config: PoolConfig): boolean {
 }
 
 // Hàm trích xuất thông tin kết nối database từ file .env
-export function createDbConnectionPool(): Pool | null {
+export function createDbConnectionPool(database: Database): Pool | null {
     // Trích xuất thông tin kết nối từ file env
     const poolConfig: PoolConfig = {
         host: Deno.env.get("db-host"),
         port: Number(Deno.env.get("db-port")),
         user: Deno.env.get("db-user"),
         password: Deno.env.get("db-password"),
-        database: Deno.env.get("db-name"),
+        database: Deno.env.get(database),    // Lấy ra tên tham số db-name tương ứng trong file .env
         connectionLimit: Number(Deno.env.get("db-connection-limit")),
     };
 
     // Kiểm tra thông tin kết nối
     if (!validatePoolConfig(poolConfig)) {
+        console.log("Invalid pool config");
         return null;
     } else {
         // Khởi tạo pool kết nối đến db
