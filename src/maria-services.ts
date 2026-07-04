@@ -1,5 +1,6 @@
 import mariadb from "mariadb";
-import { Pool, PoolConfig } from "mariadb";
+import { Pool, Connection, PoolConfig, UpsertResult, RowsWithMeta } from "mariadb";
+import { LogType, msgLog } from "./sys.ts";
 
 // Kiểu chung để chuyển dữ liệu từ một type entities bất kỳ sàng query insert string
 export type InsertableSchema<T> = {
@@ -11,6 +12,26 @@ export enum Database {
     SearchDatabase = "search-db-name",  // Database dùng cho search engine
     LogDatabase = "log-db-name",   // Database dùng cho logs
 }
+
+// Kiểu truyền vào cho hàm thưc thi SQL Query
+export type QueryParams = {
+    pool: Pool; // db connection pool
+    type: QueryType;    // Kiểu truy vấn của query này
+    sqlStr: string;    // query string dùng để thực thi thao tác với database
+};
+
+// Các kiểu Query có thể được sử dụng
+export enum QueryType {
+    Insert = "Insert",  // Thao tác thêm dữ liệu mới insert
+    Select = "Select",  // Thao tác trích xuất dữ liệu select
+}
+
+// Kiểu trả về chung cho tất cả các loại query
+export type QueryResult = {
+    type: QueryType;
+    upsert?: UpsertResult;  // Nếu không có giá trị thì sẽ là undefined
+    rows?: RowsWithMeta;    // Nếu không có giá trị thì sẽ là undefined
+};
 
 // Hàm kiểm tra DbConnectionInfo
 function validatePoolConfig(config: PoolConfig): boolean {
@@ -62,4 +83,38 @@ export function buildInsertValuesString<T>(items: T[], schema: InsertableSchema<
         });
         return `(${values.join(", ")})`;    // Ghép các value thành một tuple SQL: (value1, value2, value3)
     }).join(",\n");
+}
+
+// Hàm thực thi SQL chỉ định
+export async function executeSqlQuery(params: QueryParams): Promise<QueryResult> {
+    const result: QueryResult = {
+        type: params.type,
+        upsert: undefined,
+        rows: undefined,
+    };
+    // Khởi tạo kết nối
+    let conn: Connection | null = null;
+    try {
+        conn = await params.pool.getConnection();   // Khởi tao connection
+        const queryRes: unknown = await conn.query(params.sqlStr);
+        // Trích xuất kết quả query dựa vào loại query có trong param
+        switch (result.type) {
+            case QueryType.Insert: {
+                // Trường hợp query type là Insert
+                result.upsert = queryRes as UpsertResult;
+                break;
+            } 
+            case QueryType.Select: {
+                // Trường hợp query type là Select
+                result.rows = queryRes as RowsWithMeta;
+                break;
+            }
+        }
+    } catch (err: unknown) {
+        msgLog(err as string, LogType.SysLog);
+    } finally {
+        if (conn !== null && conn.isValid()) conn.end();
+    }
+    // Trả ra kết quả
+    return result;
 }
