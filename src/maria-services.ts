@@ -22,8 +22,10 @@ export type QueryParams = {
 
 // Các kiểu Query có thể được sử dụng
 export enum QueryType {
-    Insert = "Insert",  // Thao tác thêm dữ liệu mới insert
-    Select = "Select",  // Thao tác trích xuất dữ liệu select
+    Select,  // Thao tác trích xuất dữ liệu select
+    Insert,  // Thao tác thêm dữ liệu mới insert
+    Update, // Cập nhật dữ liệu
+    Delete, // Xoá dữ liệu
 }
 
 // Kiểu trả về chung cho tất cả các loại query
@@ -96,10 +98,13 @@ export async function executeSqlQuery(params: QueryParams): Promise<QueryResult>
     let conn: Connection | null = null;
     try {
         conn = await params.pool.getConnection();   // Khởi tao connection
-        const queryRes: unknown = await conn.query(params.sqlStr);
+        // deno-lint-ignore no-explicit-any
+        const queryRes: any = await conn.query(params.sqlStr);
         // Trích xuất kết quả query dựa vào loại query có trong param
         switch (result.type) {
-            case QueryType.Insert: {
+            case QueryType.Insert:
+            case QueryType.Update:
+            case QueryType.Delete: {
                 // Trường hợp query type là Insert
                 result.upsert = queryRes as UpsertResult;
                 break;
