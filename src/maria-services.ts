@@ -43,7 +43,7 @@ function validatePoolConfig(config: PoolConfig): boolean {
         config.user === undefined ||
         config.password === undefined ||
         config.database === undefined ||
-        (config.connectionLimit === undefined || isNaN(config.connectionLimit))
+        (config.connectionLimit === undefined || isNaN(config.connectionLimit) || config.connectionLimit <= 0)
     ) {
         return false;   // config không hợp lệ
     } else {

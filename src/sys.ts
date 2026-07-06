@@ -4,6 +4,7 @@
 
 import { generateV4UUID } from "./funcs.ts";
 
+// Các kiểu log có thể được sử dụng trong kurabox
 export enum LogType {
     CrawlerLog = "crawler_log", // log của crawler
     OperatorCrudLog = "operator_crud_log", // log thao tác data của back-end
