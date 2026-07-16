@@ -3,12 +3,13 @@
 */
 
 import { v4 } from "@std/uuid";
-import { PageType } from "./data-types.ts";
+import { Language, PageType } from "./data-types.ts";
 import {
     validateUrl,
     isValidStringWithMinLen,
     isPageTypeValue,
     validateHtmlString,
+    isLanguageValue,
 } from "./funcs.ts";
 
 interface Entities {
@@ -74,14 +75,16 @@ export class PageMeta implements Entities {
     publicationTimestamp: bigint | null;
     pageType: PageType;
     source: string;
+    language: Language;
 
-    constructor(id: string, pageId: string, title: string, publicationTimestamp: bigint, pageType: PageType, source: string) {
+    constructor(id: string, pageId: string, title: string, publicationTimestamp: bigint, pageType: PageType, source: string, language: Language) {
         this.id = id;
         this.pageId = pageId;
         this.title = title;
         this.publicationTimestamp = publicationTimestamp;
         this.pageType = pageType;
         this.source = source;
+        this.language = language;
     }
 
     validate(): boolean {
@@ -91,7 +94,8 @@ export class PageMeta implements Entities {
             !isValidStringWithMinLen(this.title, 2) ||
             this.publicationTimestamp !== null && this.publicationTimestamp <= 0 ||
             !isPageTypeValue(this.pageType) ||
-            !sourceCheckingRegExp.test(this.source)
+            !sourceCheckingRegExp.test(this.source) ||
+            !isLanguageValue(this.language)
         ) {
             return false;
         } else {
@@ -114,27 +118,6 @@ export class HtmlContent implements Entities {
 
     validate(): boolean {
         if (!v4.validate(this.id) || !v4.validate(this.pageId) || !validateHtmlString(this.htmlData)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-}
-
-// PageLink entities
-export class PageLink implements Entities {
-    id: string;
-    fromPageId: string;
-    toPageId: string;
-
-    constructor(id: string, fromPageId: string, toPageId: string) {
-        this.id = id;
-        this.fromPageId = fromPageId;
-        this.toPageId = toPageId;
-    }
-
-    validate(): boolean {
-        if (!v4.validate(this.id) || !v4.validate(this.fromPageId) || !v4.validate(this.toPageId)) {
             return false;
         } else {
             return true;

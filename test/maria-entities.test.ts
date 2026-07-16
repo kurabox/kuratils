@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { generateV4UUID } from "../src/funcs.ts";
 import { PageType } from "../src/data-types.ts";
 import {
@@ -6,12 +6,10 @@ import {
     PageStatus,
     PageMeta,
     HtmlContent,
-    PageLink,
     Image,
 } from "../src/maria-entities.ts";
 import { pageSchema } from "../src/maria-schema.ts";
-import { buildInsertValuesString } from "../mod.ts";
-import { assert } from "node:console";
+import { buildInsertValuesString, Language } from "../mod.ts";
 
 Deno.test("Page entity validation", () => {
     const validPage = new Page(generateV4UUID(), "https://a.com");
@@ -36,7 +34,8 @@ Deno.test("PageMeta entity validation", () => {
         "Valid Title",
         123n,
         PageType.Web,
-        "a.com"
+        "a.com",
+        Language.English
     );
     assertEquals(validMeta.validate(), true);
     validMeta.publicationTimestamp = null;
@@ -48,7 +47,8 @@ Deno.test("PageMeta entity validation", () => {
         "x",
         -1n,
         "wrong-type" as PageType,
-        "invalid-source"
+        "invalid-source",
+        Language.English
     );
     assertEquals(invalidMeta.validate(), false);
 });
@@ -59,14 +59,6 @@ Deno.test("HtmlContent entity validation", () => {
 
     const invalidHtml = new HtmlContent("bad-id", "bad-id", "not-html");
     assertEquals(invalidHtml.validate(), false);
-});
-
-Deno.test("PageLink entity validation", () => {
-    const validLink = new PageLink(generateV4UUID(), generateV4UUID(), generateV4UUID());
-    assertEquals(validLink.validate(), true);
-
-    const invalidLink = new PageLink("bad-id", "bad-id", "bad-id");
-    assertEquals(invalidLink.validate(), false);
 });
 
 Deno.test("Image entity validation", () => {
@@ -104,7 +96,6 @@ Deno.test("build query values string from entities class test", (): void => {
     }
 
     const pages: Page[] = generatePageEntities(10);
-    assert(pages.length === 10);
     const pageValuesStr: string | null = buildInsertValuesString(pages, pageSchema);
     assert(pageValuesStr !== null);
     console.log(pageValuesStr);
