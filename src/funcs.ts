@@ -2,6 +2,7 @@ import * as cheerio from "cheerio";
 import { eld } from "eld/large";
 import { Language, PageType, CrawlStatus, PageData } from "./data-types.ts";
 import { Image } from "./maria-entities.ts";
+import { crypto } from "@std/crypto";
 
 // Kiểm tra tính hợp lệ của url
 export function validateUrl(urlStr: string): boolean {
@@ -78,4 +79,18 @@ export function logPageData(pageData: PageData): void {
         update date: ${new Date(Number(pageData.status.updateTimestamp)).toDateString()}
         language: ${pageData.meta.language}
     `);
+}
+
+// Hàm khởi tạo hash định dạng SHA-256 từ một đoạn string bất kỳ
+export async function generateSHA256Hash(content: string): Promise<string> {
+    const encodedHash: Uint8Array<ArrayBuffer> = new TextEncoder().encode(content); // mã hoá string content đầu vào bằng TextEncoder từ crypto
+    const hashData: ArrayBuffer = await crypto.subtle.digest("SHA-256", encodedHash);
+    const hashDataArray: number[] = Array.from(new Uint8Array(hashData));
+    return hashDataArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Hàm kiểm tra định dạng SHA-256 được chỉ định
+export function validateSHA256Hash(hash: string): boolean {
+    const sha256Regex: RegExp = /^[a-f0-9]{64}$/i;
+    return sha256Regex.test(hash);
 }

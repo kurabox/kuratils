@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertFalse } from "@std/assert";
 import { generateV4UUID } from "../src/funcs.ts";
 import { PageType } from "../src/data-types.ts";
 import {
@@ -7,9 +7,10 @@ import {
     PageMeta,
     HtmlContent,
     Image,
+    HtmlHash,
 } from "../src/maria-entities.ts";
 import { pageSchema } from "../src/maria-schema.ts";
-import { buildInsertValuesString, Language } from "../mod.ts";
+import { buildInsertValuesString, generateSHA256Hash, Language } from "../mod.ts";
 
 Deno.test("Page entity validation", () => {
     const validPage = new Page(generateV4UUID(), "https://a.com");
@@ -99,4 +100,24 @@ Deno.test("build query values string from entities class test", (): void => {
     const pageValuesStr: string | null = buildInsertValuesString(pages, pageSchema);
     assert(pageValuesStr !== null);
     console.log(pageValuesStr);
+});
+
+Deno.test("HtmlHash entity test", async (): Promise<void> => {
+    const htmlHash: HtmlHash = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<h1>Hello Hash content</h1>"));
+    assert(htmlHash.validate());
+
+    // invalid id
+    const invalidHtmlHash1 = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<h1>Hello Hash content</h1>"));
+    invalidHtmlHash1.id = "randomid";
+    assertFalse(invalidHtmlHash1.validate());
+
+    // invalid pageid
+    const invalidHtmlHash2 = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<h1>Hello Hash content</h1>"));
+    invalidHtmlHash2.pageId = "randomid";
+    assertFalse(invalidHtmlHash1.validate());
+
+    // invalid hash content
+    const invalidHtmlHash3 = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<h1>Hello Hash content</h1>"));
+    invalidHtmlHash3.hash = "randomhash";
+    assertFalse(invalidHtmlHash3.validate());
 });

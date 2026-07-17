@@ -10,6 +10,7 @@ import {
     isPageTypeValue,
     validateHtmlString,
     isLanguageValue,
+    validateSHA256Hash
 } from "./funcs.ts";
 
 interface Entities {
@@ -122,6 +123,23 @@ export class HtmlContent implements Entities {
         } else {
             return true;
         }
+    }
+}
+
+// HtmlHash (dùng để so sánh sai khác cho quá trình cập nhật dữ liệu)
+export class HtmlHash implements Entities {
+    id: string;
+    pageId: string;
+    hash: string;
+
+    constructor(id: string, pageId: string, hash: string) {
+        this.id = id;
+        this.pageId = pageId;
+        this.hash = hash;
+    }
+
+    validate(): boolean {
+        return v4.validate(this.id) && v4.validate(this.pageId) && validateSHA256Hash(this.hash);
     }
 }
 

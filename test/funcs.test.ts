@@ -1,5 +1,5 @@
 import { assertEquals, assertFalse } from "@std/assert";
-import { isCrawlStatusValue, isValidStringWithMinLen, validateHtmlString } from "../src/funcs.ts";
+import { isCrawlStatusValue, isValidStringWithMinLen, validateHtmlString, generateSHA256Hash, validateSHA256Hash } from "../src/funcs.ts";
 import { Language } from "../src/data-types.ts";
 import { CrawlStatus } from "../src/data-types.ts";
 import { assert } from "node:console";
@@ -108,4 +108,26 @@ Deno.test("isCrawlStatusValue function test", (): void => {
 Deno.test("msgLog test", (): void => {
     const msg: string = "This is the log";
     assert(msgLog(msg, LogType.OperatorSearchLog).content === msg);
+});
+
+Deno.test("generateSHA256Hash test", async (): Promise<void> => {
+    const textContent: string = `
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    `;
+    const hash1: string = await generateSHA256Hash(textContent);
+    console.log(hash1);
+    assert(validateSHA256Hash(hash1));
+    const hash2: string = await generateSHA256Hash(textContent);
+    console.log(hash2);
+    assert(hash1 === hash2);
+
+    const textContent2: string = `
+        Lorem ipsum dolo sit amet, consectetur adipiscing elit. 
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    `;
+    const hash3: string = await generateSHA256Hash(textContent2);
+    console.log(hash3);
+    assert(validateSHA256Hash(hash3));
+    assert(hash1 !== hash3);
 });
