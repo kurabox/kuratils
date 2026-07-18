@@ -78,7 +78,7 @@ export class PageMeta implements Entities {
     source: string;
     language: Language;
 
-    constructor(id: string, pageId: string, title: string, publicationTimestamp: bigint, pageType: PageType, source: string, language: Language) {
+    constructor(id: string, pageId: string, title: string, publicationTimestamp: bigint | null, pageType: PageType, source: string, language: Language) {
         this.id = id;
         this.pageId = pageId;
         this.title = title;
