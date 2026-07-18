@@ -1,4 +1,4 @@
-import { HtmlContent, Page, PageMeta, PageStatus, Image } from "./maria-entities.ts";
+import { HtmlContent, HtmlHash, Page, PageMeta, PageStatus, Image } from "./maria-entities.ts";
 
 // ngôn ngữ hỗ trợ
 export enum Language {
@@ -30,5 +30,6 @@ export type PageData =  {
     status: PageStatus; // Thông tin trạng thái cập nhật
     meta: PageMeta; // Thông tin meta data của page
     htmlContent: HtmlContent;   // Nội dung của html của page
+    htmlHash: HtmlHash, // Nội dung đã được hash theo chuẩn SHA-256 của html content (dùng trong so sánh thay đổi của nội dung page)
     images?: Image[];  // Hình ảnh của page nếu có
 };
