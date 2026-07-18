@@ -61,6 +61,7 @@ export function validatePageData(pageData: PageData): boolean {
         pageData.status.validate() &&
         pageData.meta.validate() &&
         pageData.htmlContent.validate() &&
+        pageData.htmlHash.validate() &&
         (pageData.images ?? []).filter((image: Image): boolean => !image.validate()).length === 0
     );
 }
