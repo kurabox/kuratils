@@ -1,7 +1,6 @@
 import * as cheerio from "cheerio";
 import { eld } from "eld/large";
 import { Language, PageType, CrawlStatus, PageData } from "./data-types.ts";
-import { Image } from "./maria-entities.ts";
 import { crypto } from "@std/crypto";
 
 // Kiểm tra tính hợp lệ của url
@@ -61,8 +60,8 @@ export function validatePageData(pageData: PageData): boolean {
         pageData.status.validate() &&
         pageData.meta.validate() &&
         pageData.htmlContent.validate() &&
-        pageData.htmlHash.validate() &&
-        (pageData.images ?? []).filter((image: Image): boolean => !image.validate()).length === 0
+        pageData.htmlHash.validate()
+        //(pageData.images ?? []).filter((image: Image): boolean => !image.validate()).length === 0
     );
 }
 
