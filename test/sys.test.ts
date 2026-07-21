@@ -1,8 +1,8 @@
-import { msgLog, Log, LogType } from "../src/sys.ts";
-import { assertEquals } from "@std/assert";
-import { buildInsertValuesString } from "../src/maria-services.ts";
+import { msgLog, Log, LogType, saveLogsIntoDatabase } from "../src/sys.ts";
+import { assert, assertEquals } from "@std/assert";
+import { buildInsertValuesString, createDbConnectionPool, Database } from "../src/maria-services.ts";
 import { logSchema } from "../src/maria-schema.ts";
-import { assert } from "node:console";
+import { Pool } from "mariadb";
 
 Deno.test("msgLog test", (): void => {
     const log: Log = msgLog("Test message!", LogType.OperatorCrudLog);
@@ -35,4 +35,14 @@ Deno.test("buildLogValuesStr test", (): void => {
 
     const emptyLog: Log[] = generateLog(0, LogType.OperatorCrudLog);
     assert(buildInsertValuesString(emptyLog, logSchema) === null);
+});
+
+Deno.test("saveLogIntoDatabase test", async (): Promise<void> => {
+    const pool: Pool | null = createDbConnectionPool(Database.LogDatabase);
+    assert(pool !== null);
+    const logs: Log[] = [];
+    for (let i: number = 1; i < 10; i++) {
+        logs.push(msgLog(`This is log ${i}`, LogType.SysLog));
+    }
+    await saveLogsIntoDatabase(pool, logs);
 });

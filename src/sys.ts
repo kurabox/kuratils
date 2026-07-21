@@ -3,6 +3,9 @@
 */
 
 import { generateV4UUID } from "./funcs.ts";
+import { Pool } from "mariadb";
+import { buildInsertValuesString, executeSqlQuery, QueryResult, QueryType } from "./maria-services.ts";
+import { logSchema } from "./maria-schema.ts";
 
 // Các kiểu log có thể được sử dụng trong kurabox
 export enum LogType {
@@ -30,4 +33,20 @@ export function msgLog(msg: string, logType: LogType): Log {
         content: logStr,
         type: logType,
     };
+}
+
+// Hàm lưu danh sách log được chỉ định vào database (Lưu theo từng danh sách hoặc từng log đơn lẻ)
+export async function saveLogsIntoDatabase(pool: Pool, logs: Log[]): Promise<void> {
+    const logValuesStr: string | null = buildInsertValuesString<Log>(logs, logSchema);
+    if (logValuesStr !== null) {
+        // Khởi tạo tham số để thực hiện hàm executeSqlQuery
+        const queryResult: QueryResult = await executeSqlQuery({
+            pool: pool,
+            type: QueryType.Insert,
+            sqlStr: `insert into crawler_log values ${logValuesStr};`,
+        });
+        msgLog(`${queryResult.upsert!.affectedRows} log(s) saved`, LogType.SysLog);
+    } else {
+        msgLog("Cannot save logs into database because of invalid format", LogType.SysLog);
+    }
 }
