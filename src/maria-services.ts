@@ -99,7 +99,7 @@ export async function executeSqlQuery(params: QueryParams): Promise<QueryResult>
     try {
         conn = await params.pool.getConnection();   // Khởi tao connection
         // deno-lint-ignore no-explicit-any
-        const queryRes: any = await conn.query(params.sqlStr);
+        const queryRes: any = await conn.query("start transaction;\n" + params.sqlStr + "\ncommit;");
         // Trích xuất kết quả query dựa vào loại query có trong param
         switch (result.type) {
             case QueryType.Insert:
@@ -116,6 +116,7 @@ export async function executeSqlQuery(params: QueryParams): Promise<QueryResult>
             }
         }
     } catch (err: unknown) {
+        if (conn !== null && conn.isValid()) conn.rollback();   // rollback toàn bộ các query đã thực thi trước đó
         msgLog(err as string, LogType.SysLog);
     } finally {
         if (conn !== null && conn.isValid()) conn.end();
