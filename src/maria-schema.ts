@@ -33,5 +33,5 @@ export const htmlContentSchema: InsertableSchema<HtmlContent> = {
 
 // Schema cho kiểu HtmlHash
 export const htmlHashSchema: InsertableSchema<HtmlHash> = {
-    fields: ["id", "pageId", "hash"],
+    fields: ["id", "pageId", "hashData"],
 };

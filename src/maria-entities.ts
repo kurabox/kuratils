@@ -130,16 +130,16 @@ export class HtmlContent implements Entities {
 export class HtmlHash implements Entities {
     id: string;
     pageId: string;
-    hash: string;
+    hashData: string;
 
-    constructor(id: string, pageId: string, hash: string) {
+    constructor(id: string, pageId: string, hashData: string) {
         this.id = id;
         this.pageId = pageId;
-        this.hash = hash;
+        this.hashData = hashData;
     }
 
     validate(): boolean {
-        return v4.validate(this.id) && v4.validate(this.pageId) && validateSHA256Hash(this.hash);
+        return v4.validate(this.id) && v4.validate(this.pageId) && validateSHA256Hash(this.hashData);
     }
 }
 

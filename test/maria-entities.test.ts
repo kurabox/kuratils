@@ -118,6 +118,6 @@ Deno.test("HtmlHash entity test", async (): Promise<void> => {
 
     // invalid hash content
     const invalidHtmlHash3 = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<h1>Hello Hash content</h1>"));
-    invalidHtmlHash3.hash = "randomhash";
+    invalidHtmlHash3.hashData = "randomhash";
     assertFalse(invalidHtmlHash3.validate());
 });

@@ -5,8 +5,9 @@ import {
     logPageData,
     validatePageData,
     generateV4UUID,
+    generateSHA256Hash,
 } from "../src/funcs.ts";
-import { HtmlContent, Image, Page, PageMeta, PageStatus } from "../src/maria-entities.ts";
+import { HtmlContent, HtmlHash, Image, Page, PageMeta, PageStatus } from "../src/maria-entities.ts";
 
 Deno.test("DataType test", () => {
     const dataType = PageType.Web;
@@ -16,7 +17,7 @@ Deno.test("DataType test", () => {
     assertFalse(isPageTypeValue(randomValue));
 });
 
-Deno.test("Page type test", (): void => {
+Deno.test("Page type test", async (): Promise<void> => {
     const validPage: Page = new Page(generateV4UUID(), "https://a.com");
     const validStatus: PageStatus = new PageStatus(generateV4UUID(), generateV4UUID(), 123n, 456n);
     const validMeta: PageMeta = new PageMeta(
@@ -29,6 +30,7 @@ Deno.test("Page type test", (): void => {
         Language.English
     );
     const validHtml: HtmlContent = new HtmlContent(generateV4UUID(), generateV4UUID(), "<p>Hello</p>");
+    const validHtmlHash: HtmlHash = new HtmlHash(generateV4UUID(), generateV4UUID(), await generateSHA256Hash("<p>Hello</p>"));
     const validImage: Image = new Image(
         generateV4UUID(),
         generateV4UUID(),
@@ -42,6 +44,7 @@ Deno.test("Page type test", (): void => {
         status: validStatus,
         meta: validMeta,
         htmlContent: validHtml,
+        htmlHash: validHtmlHash,
         images: [validImage, validImage]
     };
     assert(validatePageData(pageData));

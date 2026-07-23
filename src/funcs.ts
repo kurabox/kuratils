@@ -78,7 +78,7 @@ export function logPageData(pageData: PageData): void {
         created timestamp: ${new Date(Number(pageData.status.createdTimestamp)).toDateString()}
         update date: ${new Date(Number(pageData.status.updateTimestamp)).toDateString()}
         language: ${pageData.meta.language}
-        content hash: ${pageData.htmlHash.hash}
+        content hash: ${pageData.htmlHash.hashData}
     `);
 }
 
